@@ -1,10 +1,57 @@
 import React from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth, useClerk } from "@clerk/clerk-react";
+import { useAuth, useClerk, useUser } from "@clerk/clerk-react";
 import { toast } from "react-hot-toast";
 import { useFile } from "../context/FileContext";
+import { useSupabase } from "../utils/supabase.ts";
 
 function Home() {
+  const { user } = useUser();
+  const supabase = useSupabase();
+
+  useEffect(() => {
+    const saveUser = async () => {
+      if (!user) return;
+
+      const { id, primaryEmailAddress, fullName } = {
+        id: user.id,
+        primaryEmailAddress: user.primaryEmailAddress?.emailAddress,
+        fullName: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+      };
+
+      // Check if user exists in Supabase
+      const { data: existingUser, error: selectError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("id", id)
+        .single();
+
+      if (selectError && selectError.code !== "PGRST116") {
+        // PGRST116 means 'no rows found'
+        console.error("Select error:", selectError);
+        return;
+      }
+
+      if (!existingUser) {
+        // Insert new record
+        const { error: insertError } = await supabase.from("users").insert([
+          {
+            id,
+            email: primaryEmailAddress,
+            name: fullName,
+          },
+        ]);
+        if (insertError) console.error("Insert error:", insertError);
+        else console.log("✅ User saved to Supabase!");
+      } else {
+        console.log("User already exists in Supabase");
+      }
+    };
+
+    saveUser();
+  }, [user]);
+
   const navigate = useNavigate();
   const { isSignedIn } = useAuth();
   const { redirectToSignIn } = useClerk();
