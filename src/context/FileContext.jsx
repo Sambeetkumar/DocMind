@@ -11,6 +11,7 @@ export const FileProvider = ({ children }) => {
   const [progressMessage, setProgressMessage] = useState("");
 
   const handleFileUpload = async (file) => {
+    
     setUploadedFile(file);
     setFileContent("");
     setIsLoading(true);
