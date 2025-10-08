@@ -5,7 +5,7 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
-
+import {NavLink} from "react-router-dom"
 function Nav() {
   return (
     <nav className="bg-white px-6 py-4 shadow-sm">
@@ -18,30 +18,34 @@ function Nav() {
         </div>
 
         <div className="hidden md:flex items-center space-x-8">
-          <a
+          <NavLink
+            to="/"
             href="#"
             className="text-gray-600 hover:text-gray-800 transition-colors"
           >
             Home
-          </a>
-          <a
+          </NavLink>
+          <NavLink
+            to="/features"
             href="#"
             className="text-gray-600 hover:text-gray-800 transition-colors"
           >
             Features
-          </a>
-          <a
+          </NavLink>
+          <NavLink
+            to="/history"
             href="#"
             className="text-gray-600 hover:text-gray-800 transition-colors"
           >
             History
-          </a>
-          <a
+          </NavLink>
+          <NavLink
+            to="/contact"
             href="#"
             className="text-gray-600 hover:text-gray-800 transition-colors"
           >
-            About
-          </a>
+            Contact
+          </NavLink>
         </div>
 
         {/* <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
